@@ -1,15 +1,24 @@
 import {Toolbox} from "./toolbox.js";
+import {Card} from "./card.js";
 
 let canvas = document.getElementById("myCanvas");
 let pencil = canvas.getContext("2d");
 
-let arr = ["a", "b", "c"];
 let toolbox = new Toolbox();
+let cards = [];
 
-console.log(toolbox.getRandomItem(arr));
+for(let i = 0; i < 6; i++){
+    cards.push(new Card(canvas, pencil, toolbox));
+}
 
-console.log(toolbox.shuffleArray(arr));
+function gameLoop(){
+    pencil.clearRect(0, 0, canvas.width, canvas.height);
 
-pencil.fillStyle = (toolbox.getRandomColor());
-pencil.fillRect(50, 50, 150, 100);
-console.log(toolbox.getRandomColor());
+    for(let i = 0; i < cards.length; i++){
+        cards[i].drawCards();
+    }
+}
+
+setInterval(gameLoop, 1000);
+
+//canvas.addEventListener("click", cards[0].detectCardClick());

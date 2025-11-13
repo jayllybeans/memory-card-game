@@ -17,6 +17,8 @@ colorOptions = toolbox.shuffleArray(colorOptions);
 
 let cards = [];
 let spacing = 50;
+let matches = 0;
+let matchesElement = document.getElementById("matchesDisplay");
 
 for(let i = 0; i < 6; i++){
     let selectedColor = colorOptions[0];
@@ -25,12 +27,39 @@ for(let i = 0; i < 6; i++){
     spacing += 150;
 }
 
-
 function gameLoop() {
     pencil.clearRect(0,0, canvas.width, canvas.height);
 
-    for(let i = 0; i < cards.length; i++){
+    let faceUpCards = [];
+    if(cards.length == 0){
+
+    }else{
+        for(let i = 0; i < cards.length; i++){
         cards[i].draw();
+        if (faceUpCards.length == 2){
+            if (faceUpCards[0].color == faceUpCards[1].color){
+                let removeInstanceOf = faceUpCards[0].color;
+            for (let i = 0; i < 2; i++){
+                faceUpCards.splice(0, 1);
+            }
+            for (let i = 0; i < cards.length; i++){
+                if(removeInstanceOf == cards[i].color){
+                    cards[i].color = "white";
+                    i--;
+                }
+            matches++;
+            matchesElement.innerHTML = "MATCHES: " + matches;
+            }
+            } else {
+                for (let i = 0; i < 2; i++){
+                    faceUpCards[0].isFaceUp = false;
+                    faceUpCards.splice(0, 1);
+                }
+            }
+        } else if (cards[i].isFaceUp){
+            faceUpCards.push(cards[i]);
+        }
+    }
     }
 }
 

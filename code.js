@@ -5,16 +5,33 @@ let canvas = document.getElementById("myCanvas");
 let pencil = canvas.getContext("2d"); // This gives you the drawing context, like a pencil
 let toolbox = new Toolbox();
 
-let color1 = toolbox.getRandomColor();
-let card1a = new Card(canvas, pencil, 50, 50, color1);
-let card1b = new Card(canvas, pencil, 200, 50, color1);
+let colorOptions = [];
 
+for (let i = 0; i < 3; i++){
+        colorOptions.push(toolbox.getRandomColor());
+    }
+for (let i = 0; i < 3; i++){
+        colorOptions.push(colorOptions[i])
+    }
+colorOptions = toolbox.shuffleArray(colorOptions);
+
+let cards = [];
+let spacing = 50;
+
+for(let i = 0; i < 6; i++){
+    let selectedColor = Math.floor(Math.random() * colorOptions.length);
+    colorOptions.splice(selectedColor, 1);
+    cards.push(new Card (canvas, pencil, spacing, 50, selectedColor));
+    spacing += 150;
+}
 
 
 function gameLoop() {
     pencil.clearRect(0,0, canvas.width, canvas.height);
-    card1a.draw();
-    card1b.draw();
+
+    for(let i = 0; i < cards.length; i++){
+        cards[i].draw();
+    }
 }
 
 setInterval(gameLoop, 50);

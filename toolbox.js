@@ -21,12 +21,14 @@ shuffleArray (array){
 }
 
 //get random color
-getRandomColor(){
-    let red = Math.floor(Math.random() * 256);
-    let green = Math.floor(Math.random() * 256);
-    let blue = Math.floor(Math.random() * 256);
-    return "rgb(" + red + ", " + green + ", " + blue + ")";
-}
+getRandomColor() {
+        let characters = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"];
+        let color = "#";
+        for(let i = 0; i < 6; i++) {
+            color += this.getRandomItem(characters);
+        }
+        return color;
+    }
 
 isWithinRect(pointX, pointY, rectX, rectY, rectW, rectH) {
         if(pointX > rectX + rectW) {

@@ -19,8 +19,8 @@ let cards = [];
 let spacing = 50;
 
 for(let i = 0; i < 6; i++){
-    let selectedColor = Math.floor(Math.random() * colorOptions.length);
-    colorOptions.splice(selectedColor, 1);
+    let selectedColor = colorOptions[0];
+    colorOptions.splice(0, 1);
     cards.push(new Card (canvas, pencil, spacing, 50, selectedColor));
     spacing += 150;
 }

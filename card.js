@@ -1,58 +1,46 @@
+import { Toolbox } from "./toolbox.js";
+
 export class Card{
-    x = 0;
-    y = 100;
+    x = 50;
+    y = 50;
+    color;
     width = 100;
     height = 100;
-    colorOptions = [];
-    isClicked = false;
+    canvas;
+    pencil;
+    isFaceUp = false; 
+    toolbox = new Toolbox();
 
-    constructor(canvas, pencil, toolbox){
-        this.canvas = canvas;
+    constructor(canvas, pencil, x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
         this.pencil = pencil;
-        this.toolbox = toolbox;
+        this.canvas = canvas;
+        canvas.addEventListener("click", (e) => this.onClick(e));
     }
 
-    setCardColors(toolbox){
-        for (let i = 0; i < 3; i++){
-            this.colorOptions.push(toolbox.getRandomColor());
+    draw() {
+        if(this.isFaceUp) {
+            this.pencil.fillStyle = this.color; // Set the fill color
+            this.pencil.fillRect(this.x, this.y, this.width, this.height); // Draw a filled rectangle at (50, 50) with width 100 and height 75
+        } else { //draw face down
+            this.pencil.strokeStyle = "gray"; // Set the outline color to red
+            this.pencil.lineWidth = 10;       // Set the outline width to 2 pixels
+            this.pencil.strokeRect(this.x, this.y, this.width, this.height); // Draws an outlined rectangle at (50,50) with width 100 and height 75
         }
-        for(let i = 0; i < 3; i++){
-            this.colorOptions.push(this.colorOptions[i]);
-        }
-        this.colorOptions = toolbox.shuffleArray(this.colorOptions);
     }
 
-    drawCards(){
-        this.canvas.addEventListener("click", this.detectCardClick());
-        if (this.isClicked){
-            this.pencil.fillStyle = Math.floor(Math.random() * this.colorOptions.length);
-        }
-        else{
-            this.pencil.fillStyle = "black";
-        }
-        this.pencil.fillRect(this.x + 100, this.y, this.width, this.height);
-    }
+     onClick(event) {
+        let clickX = event.offsetX;
+        let clickY = event.offsetY;
 
-    //check if the user clicked on the card
-    detectCardClick(){
-        this.cardTopLeft = { 
-            x : this.x,
-            y : this.y - this.height
+        let isClickInButton = this.toolbox.isWithinRect(
+            clickX, clickY, this.x, this.y, this.width, this.height
+        );
+
+        if(isClickInButton) {
+            this.isFaceUp = !this.isFaceUp;
         }
-
-        this.cardBottomRight = { 
-            x : this.x + this.width,
-            y : this.y - this.height + this.height
-        }
-
-        
-        let isFarEnoughRight = this.x > this.cardTopLeft.x;
-        let isLowEnough = this.y > this.cardTopLeft.y;
-        let isFarEnoughLeft = this.x < this.cardBottomRight.x;
-        let isHighEnough = this.y < this.cardBottomRight.y;
-
-        if((isFarEnoughRight && isLowEnough && isFarEnoughLeft && isHighEnough))
-            this.isClicked = true;
-        this.isClicked = false;
     }
 }

@@ -1,24 +1,20 @@
-import {Toolbox} from "./toolbox.js";
-import {Card} from "./card.js";
+import { Card } from "./card.js";
+import { Toolbox } from "./toolbox.js";
 
 let canvas = document.getElementById("myCanvas");
-let pencil = canvas.getContext("2d");
-
+let pencil = canvas.getContext("2d"); // This gives you the drawing context, like a pencil
 let toolbox = new Toolbox();
-let cards = [];
 
-for(let i = 0; i < 6; i++){
-    cards.push(new Card(canvas, pencil, toolbox));
+let color1 = toolbox.getRandomColor();
+let card1a = new Card(canvas, pencil, 50, 50, color1);
+let card1b = new Card(canvas, pencil, 200, 50, color1);
+
+
+
+function gameLoop() {
+    pencil.clearRect(0,0, canvas.width, canvas.height);
+    card1a.draw();
+    card1b.draw();
 }
 
-function gameLoop(){
-    pencil.clearRect(0, 0, canvas.width, canvas.height);
-
-    for(let i = 0; i < cards.length; i++){
-        cards[i].drawCards();
-    }
-}
-
-setInterval(gameLoop, 1000);
-
-//canvas.addEventListener("click", cards[0].detectCardClick());
+setInterval(gameLoop, 50);

@@ -1,22 +1,23 @@
 import { Toolbox } from "./toolbox.js";
 
 export class Card{
-    x = 50;
-    y = 50;
+    x = 100;
+    y = 100;
     color;
-    width = 100;
-    height = 100;
+    width = 150;
+    height = 200;
     canvas;
     pencil;
     isFaceUp = false; 
     toolbox = new Toolbox();
 
-    constructor(canvas, pencil, x, y, color) {
+    constructor(canvas, pencil, x, y, color, card) {
         this.x = x;
         this.y = y;
         this.color = color;
         this.pencil = pencil;
         this.canvas = canvas;
+        this.card = card;
         canvas.addEventListener("click", (e) => this.onClick(e));
     }
 
@@ -25,9 +26,7 @@ export class Card{
             this.pencil.fillStyle = this.color; // Set the fill color
             this.pencil.fillRect(this.x, this.y, this.width, this.height); // Draw a filled rectangle at (50, 50) with width 100 and height 75
         } else { //draw face down
-            this.pencil.strokeStyle = "gray"; // Set the outline color to red
-            this.pencil.lineWidth = 10;       // Set the outline width to 2 pixels
-            this.pencil.strokeRect(this.x, this.y, this.width, this.height); // Draws an outlined rectangle at (50,50) with width 100 and height 75
+            this.pencil.drawImage(this.card, this.x, this.y, this.width, this.height);
         }
     }
 

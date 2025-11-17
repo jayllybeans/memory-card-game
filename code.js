@@ -3,6 +3,8 @@ import { Toolbox } from "./toolbox.js";
 
 let canvas = document.getElementById("myCanvas");
 let pencil = canvas.getContext("2d"); // This gives you the drawing context, like a pencil
+let cardBacking = document.getElementById("cardBack");
+let victoryScreen = document.getElementById("victoryScreen");
 let toolbox = new Toolbox();
 
 let colorOptions = [];
@@ -19,47 +21,64 @@ let cards = [];
 let spacing = 50;
 let matches = 0;
 let matchesElement = document.getElementById("matchesDisplay");
+let isChecking = false;
 
 for(let i = 0; i < 6; i++){
     let selectedColor = colorOptions[0];
     colorOptions.splice(0, 1);
-    cards.push(new Card (canvas, pencil, spacing, 50, selectedColor));
-    spacing += 150;
+    cards.push(new Card (canvas, pencil, spacing, 50, selectedColor, cardBacking));
+    spacing += 250;
 }
 
 function gameLoop() {
     pencil.clearRect(0,0, canvas.width, canvas.height);
 
     let faceUpCards = [];
-    if(cards.length == 0){
 
-    }else{
-        for(let i = 0; i < cards.length; i++){
+    // 1. Draw cards and collect any face-up cards
+    for (let i = 0; i < cards.length; i++) {
         cards[i].draw();
-        if (faceUpCards.length == 2){
-            if (faceUpCards[0].color == faceUpCards[1].color){
-                let removeInstanceOf = faceUpCards[0].color;
-            for (let i = 0; i < 2; i++){
-                faceUpCards.splice(0, 1);
-            }
-            for (let i = 0; i < cards.length; i++){
-                if(removeInstanceOf == cards[i].color){
-                    cards[i].color = "white";
-                    i--;
-                }
-            matches++;
-            matchesElement.innerHTML = "MATCHES: " + matches;
-            }
-            } else {
-                for (let i = 0; i < 2; i++){
-                    faceUpCards[0].isFaceUp = false;
-                    faceUpCards.splice(0, 1);
-                }
-            }
-        } else if (cards[i].isFaceUp){
+        if (cards[i].isFaceUp && cards[i].color !== "white") {
             faceUpCards.push(cards[i]);
         }
     }
+
+    // 2. If exactly two cards are face-up, check them
+    if (faceUpCards.length == 2 && !isChecking) {
+        isChecking = true;
+
+        // MATCH — Eliminates them both
+        if (faceUpCards[0].color == faceUpCards[1].color) {
+            let targetColor = faceUpCards[0].color;
+
+            setTimeout(() => {
+                for (let card of cards) {
+                    if (card.color == targetColor) {
+                        card.color = "white";
+                    }
+                }
+
+                matches++;
+                matchesElement.innerHTML = "MATCHES: " + matches;
+
+                isChecking = false;
+            }, 700);
+        
+        // NO MATCH — Flip them back
+        } else {
+           setTimeout(() => {
+            faceUpCards[0].isFaceUp = false;
+            faceUpCards[1].isFaceUp = false;
+
+            isChecking = false;
+        }, 700);
+        }
+    }
+
+    if (matches == 3){
+        pencil.clearRect(0,0, canvas.width, canvas.height);
+        myCanvas.height = 900;
+        pencil.drawImage(victoryScreen, 0, 0, canvas.width, canvas.height);
     }
 }
 
